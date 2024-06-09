@@ -1,5 +1,6 @@
 import torch.nn as nn
 import torch.nn.functional as F
+from torchvision import models, transforms
 
 
 class EmbeddingNet(nn.Module):
@@ -21,6 +22,21 @@ class EmbeddingNet(nn.Module):
         output = self.convnet(x)
         output = output.view(output.size()[0], -1)
         output = self.fc(output)
+        return output
+
+    def get_embedding(self, x):
+        return self.forward(x)
+
+
+class ResNet(nn.Module):
+    def __init__(self):
+        super(ResNet, self).__init__()
+        self.resnet = models.resnet50(pretrained=True)
+        # Изменение последнего слоя для получения 128-мерного вектора признаков
+        self.resnet.fc = nn.Linear(self.resnet.fc.in_features, 128)
+
+    def forward(self, x):
+        output = self.resnet(x)
         return output
 
     def get_embedding(self, x):

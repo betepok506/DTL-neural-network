@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 from PIL import Image
 
@@ -181,3 +183,83 @@ class BalancedBatchSampler(BatchSampler):
 
     def __len__(self):
         return self.n_dataset // self.batch_size
+
+
+class SiameseAerialPhotography(Dataset):
+    """
+    Train: For each sample creates randomly a positive or a negative pair
+    Test: Creates fixed pairs for testing
+    """
+
+    def __init__(self, path_to_data: str, transform, split: str = 'train'):
+        '''
+
+        Parameters:
+        path_to_data:  `str`
+            Путь до папкки с датасетов
+        '''
+        self.path_to_data = path_to_data
+        self.transform = self.transform
+        self.split = split
+
+        self.labels = [] #set(map(int, os.listdir(self.path_to_data)))
+        self.path_to_imgs = []
+        # Перебираем папки для получения путей изображений к ним
+        for folder in os.listdir(self.path_to_data):
+            for filename in os.listdir(os.path.join(self.path_to_data, folder)):
+                self.labels.append(int(folder))
+                self.path_to_imgs.append(os.path.join(self.path_to_data, folder, filename))
+
+        self.labels_set = set(self.labels)
+        self.label_to_indices = {label: np.where(self.labels == label)[0]
+                                 for label in self.labels_set}
+        if self.split == "test":
+            random_state = np.random.RandomState(29)
+
+            positive_pairs = [[i,
+                               random_state.choice(self.label_to_indices[self.labels[i]]),
+                               1]
+                              for i in range(0, len(self.path_to_imgs), 2)]
+
+            negative_pairs = [[i,
+                               random_state.choice(self.label_to_indices[
+                                                       np.random.choice(
+                                                           list(self.labels_set - set([self.labels[i]]))
+                                                       )
+                                                   ]),
+                               0]
+                              for i in range(1, len(self.path_to_imgs), 2)]
+            self.test_pairs = positive_pairs + negative_pairs
+
+    def __getitem__(self, index):
+        if self.split == 'train':
+            # Выбираем случай для обучения: Positive, positive; Positive, Negative.
+            target = np.random.randint(0, 2)
+
+            img1 = Image.open(self.path_to_imgs[index])
+            label1 = self.labels[index]
+
+            if target == 1:
+                siamese_index = index
+                while siamese_index == index:
+                    siamese_index = np.random.choice(self.label_to_indices[label1])
+            else:
+                siamese_label = np.random.choice(list(self.labels_set - set([label1])))
+                siamese_index = np.random.choice(self.label_to_indices[siamese_label])
+
+            img2 = Image.open(self.path_to_imgs[siamese_index])
+        else:
+            img1 = self.path_to_imgs[self.test_pairs[index][0]]
+            img2 = self.path_to_imgs[self.test_pairs[index][1]]
+            target = self.test_pairs[index][2]
+
+        img1 = Image.fromarray(img1.numpy(), mode='RGB')
+        img2 = Image.fromarray(img2.numpy(), mode='RGB')
+        if self.transform is not None:
+            img1 = self.transform(img1)
+            img2 = self.transform(img2)
+
+        return (img1, img2), target
+
+    def __len__(self):
+        return len(self.path_to_imgs)
