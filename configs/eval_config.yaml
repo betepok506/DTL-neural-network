@@ -1,0 +1,24 @@
+comment: "Обучение сиамской сети для сравнения изображений"
+short_comment: ""
+model:
+  name: "resnet50"
+  path_to_model_weight: 'D:\\projects_andrey\\hackaton\\DTL-neural-network\\runs\\20240610_154308_resnet50_\\checkpoints\\epoch_42_0.010\\checkpoint_resnet50.pth'
+
+dataset:
+  path_to_train_data: "D:\\projects_andrey\\hackaton\\data_processing\\data\\dataset\\train"
+  path_to_test_data: "D:\\projects_andrey\\hackaton\\data_processing\\data\\dataset\\test"
+  num_labels: 50
+
+training_params:
+  lr: 6e-5
+  num_train_epochs: 50
+  use_augmentation: True
+  train_batch_size: 32
+  test_batch_size: 32
+  image_size: [256, 256]
+  image_crop: [256, 256]
+
+  output_dir_result: "./result"
+  save_to_checkpoint: './models/checkpoints'
+  num_workers_data_loader: 4
+  report_to: "tensorboard"

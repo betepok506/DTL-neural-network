@@ -199,7 +199,7 @@ class SiameseAerialPhotography(Dataset):
             Путь до папкки с датасетов
         '''
         self.path_to_data = path_to_data
-        self.transform = self.transform
+        self.transform = transform
         self.split = split
 
         self.labels = [] #set(map(int, os.listdir(self.path_to_data)))
@@ -211,6 +211,7 @@ class SiameseAerialPhotography(Dataset):
                 self.path_to_imgs.append(os.path.join(self.path_to_data, folder, filename))
 
         self.labels_set = set(self.labels)
+        self.labels = np.array(self.labels)
         self.label_to_indices = {label: np.where(self.labels == label)[0]
                                  for label in self.labels_set}
         if self.split == "test":
@@ -249,12 +250,12 @@ class SiameseAerialPhotography(Dataset):
 
             img2 = Image.open(self.path_to_imgs[siamese_index])
         else:
-            img1 = self.path_to_imgs[self.test_pairs[index][0]]
-            img2 = self.path_to_imgs[self.test_pairs[index][1]]
+            img1 = Image.open(self.path_to_imgs[self.test_pairs[index][0]])
+            img2 = Image.open(self.path_to_imgs[self.test_pairs[index][1]])
             target = self.test_pairs[index][2]
 
-        img1 = Image.fromarray(img1.numpy(), mode='RGB')
-        img2 = Image.fromarray(img2.numpy(), mode='RGB')
+        # img1 = Image.fromarray(img1.numpy(), mode='RGB')
+        # img2 = Image.fromarray(img2, mode='RGB')
         if self.transform is not None:
             img1 = self.transform(img1)
             img2 = self.transform(img2)

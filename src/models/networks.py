@@ -1,6 +1,7 @@
 import torch.nn as nn
 import torch.nn.functional as F
 from torchvision import models, transforms
+from torchvision.models import resnet50, ResNet101_Weights
 
 
 class EmbeddingNet(nn.Module):
@@ -31,9 +32,9 @@ class EmbeddingNet(nn.Module):
 class ResNet(nn.Module):
     def __init__(self):
         super(ResNet, self).__init__()
-        self.resnet = models.resnet50(pretrained=True)
+        self.resnet = models.resnet101(weights=models.ResNet101_Weights.IMAGENET1K_V2)
         # Изменение последнего слоя для получения 128-мерного вектора признаков
-        self.resnet.fc = nn.Linear(self.resnet.fc.in_features, 128)
+        self.resnet.fc = nn.Linear(self.resnet.fc.in_features, 256)
 
     def forward(self, x):
         output = self.resnet(x)
@@ -83,6 +84,10 @@ class SiameseNet(nn.Module):
         output1 = self.embedding_net(x1)
         output2 = self.embedding_net(x2)
         return output1, output2
+
+    def predict(self, x):
+        output = self.embedding_net(x)
+        return output
 
     def get_embedding(self, x):
         return self.embedding_net(x)

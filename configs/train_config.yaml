@@ -1,0 +1,24 @@
+comment: "Обучение сиамской сети для сравнения изображений"
+short_comment: "embeding_256"
+model:
+  name: "resnet101"
+  path_to_model_weight: ''
+
+dataset:
+  path_to_train_data: "D:\\projects_andrey\\hackaton\\data_processing\\data\\dataset\\train"
+  path_to_test_data: "D:\\projects_andrey\\hackaton\\data_processing\\data\\dataset\\test"
+  num_labels: 500
+
+training_params:
+  lr: 6e-5
+  num_train_epochs: 500
+  use_augmentation: True
+  train_batch_size: 128
+  test_batch_size: 128
+  image_size: [256, 256]
+  image_crop: [256, 256]
+
+  output_dir_result: "./result"
+  save_to_checkpoint: './models/checkpoints'
+  num_workers_data_loader: 4
+  report_to: "tensorboard"
