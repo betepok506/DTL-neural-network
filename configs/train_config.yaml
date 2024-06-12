@@ -1,7 +1,7 @@
 comment: "Обучение сиамской сети для сравнения изображений"
-short_comment: "embeding_256"
+short_comment: "embeding_128"
 model:
-  name: "resnet101"
+  name: "efficientnet_b0"
   path_to_model_weight: ''
 
 dataset:
@@ -13,8 +13,9 @@ training_params:
   lr: 6e-5
   num_train_epochs: 500
   use_augmentation: True
-  train_batch_size: 128
-  test_batch_size: 128
+  freeze_layers: False
+  train_batch_size: 32
+  test_batch_size: 32
   image_size: [256, 256]
   image_crop: [256, 256]
 

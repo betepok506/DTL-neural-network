@@ -6,6 +6,7 @@ class TrainingParams:
     lr: float
     num_train_epochs: int
     use_augmentation: bool
+    freeze_layers: bool
     # is_clip_grad_norm: bool
     # is_clip_grad_value: bool
 

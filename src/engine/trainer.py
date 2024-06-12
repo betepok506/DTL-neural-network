@@ -37,22 +37,35 @@ def fit(train_loader,
 
         # Train stage
         start_time_training_epoch = time.time()
-        train_loss, metrics = train_epoch(train_loader, model, loss_fn, optimizer, logger, device, log_interval, metrics)
+        train_loss, metrics = train_epoch(train_loader,
+                                          model,
+                                          loss_fn,
+                                          optimizer,
+                                          device,
+                                          logger,
+                                          log_interval,
+                                          metrics)
         end_time_training_epoch = time.time()
         logger.add_scalar("Train/Loss", train_loss, epoch)
 
         scheduler.step()
 
         start_time_evaluate_epoch = time.time()
-        val_loss, metrics = test_epoch(val_loader, model, loss_fn, device, metrics)
+        val_loss, metrics = test_epoch(val_loader,
+                                       model,
+                                       loss_fn,
+                                       device,
+                                       metrics)
         end_time_evaluate_epoch = time.time()
 
         val_loss /= len(val_loader)
         logger.add_scalar("Validate/Loss", val_loss, epoch)
 
-        logger.info(f"Epoch: {epoch + 1}/{n_epochs}\n"
-                    f"Train Loss: {train_loss}; Time: {(end_time_training_epoch - start_time_training_epoch):.4f}"
-                    f"Validation Loss: {val_loss}; Time: {(end_time_evaluate_epoch - start_time_evaluate_epoch):.4f}")
+        logger.info(f"Epoch: {epoch + 1}/{n_epochs}\n")
+        logger.info(
+            f"Train Loss: {train_loss}; Time: {(end_time_training_epoch - start_time_training_epoch):.4f} \n")
+        logger.info(
+            f"Validation Loss: {val_loss}; Time: {(end_time_evaluate_epoch - start_time_evaluate_epoch):.4f}")
 
         if min_val_loss > val_loss:
             logger.info(f' Loss Decreasing.. {min_val_loss:.3f} >> {val_loss:.3f}')

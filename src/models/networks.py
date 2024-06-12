@@ -28,13 +28,49 @@ class EmbeddingNet(nn.Module):
     def get_embedding(self, x):
         return self.forward(x)
 
+class TorhModelFeatureExtraction(nn.Module):
+    def __init__(self, name):
+        super(TorhModelFeatureExtraction, self).__init__()
+        if name == 'resnet50':
+            self.model = models.resnet50(weights=True)
+            self.model.fc = nn.Sequential(nn.Linear(self.model.fc.in_features, 256),
+                                          nn.PReLU(),
+                                          nn.Linear(256, 256),
+                                          nn.PReLU(),
+                                          nn.Linear(256, 128)
+                                          )
+        elif name == "efficientnet_b0":
+            self.model = models.efficientnet_b0(weights=models.EfficientNet_B0_Weights)
+            self.model.classifier = nn.Sequential(nn.Linear(self.model.classifier[1].in_features, 256),
+                                nn.PReLU(),
+                                nn.Linear(256, 256),
+                                nn.PReLU(),
+                                nn.Linear(256, 128)
+                                )
+        else:
+            raise NotImplementedError
+
+        # self.model.fc = nn.Linear(self.model.fc.in_features, 128)
+        # self.model.fc = nn.Sequential(nn.Linear(self.model.fc.in_features, 256),
+        #                         nn.PReLU(),
+        #                         nn.Linear(256, 256),
+        #                         nn.PReLU(),
+        #                         nn.Linear(256, 128)
+        #                         )
+
+    def forward(self, x):
+        output = self.model(x)
+        return output
+
+    def get_embedding(self, x):
+        return self.forward(x)
 
 class ResNet(nn.Module):
     def __init__(self):
         super(ResNet, self).__init__()
-        self.resnet = models.resnet101(weights=models.ResNet101_Weights.IMAGENET1K_V2)
+        self.resnet = models.resnet50(weights=True)
         # Изменение последнего слоя для получения 128-мерного вектора признаков
-        self.resnet.fc = nn.Linear(self.resnet.fc.in_features, 256)
+        self.resnet.fc = nn.Linear(self.resnet.fc.in_features, 128)
 
     def forward(self, x):
         output = self.resnet(x)

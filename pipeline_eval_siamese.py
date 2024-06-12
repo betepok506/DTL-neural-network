@@ -1,6 +1,6 @@
 from src.enities.training_pipeline_params import TrainingConfig, read_training_pipeline_params
 from torchvision import transforms
-from src.models.networks import ResNet, SiameseNet
+from src.models.networks import ResNet, SiameseNet,  TorhModelFeatureExtraction
 import torch
 from pathlib import Path
 from PIL import Image
@@ -48,13 +48,14 @@ def pipeline_eval(**kwargs):
         # transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # Нормализация
     ])
 
-    resnet = ResNet()
+    # resnet = ResNet()
+    resnet = TorhModelFeatureExtraction(params.model.name)
     model = SiameseNet(resnet)
     # model = Model('google/vit-base-patch16-224-in21k', device=device)
 
     if os.path.exists(params.model.path_to_model_weight):
         logger.info(f"Загрузка весов модели: {params.model.path_to_model_weight}")
-        # model = torch.load(params.model.path_to_model_weight)
+        model = torch.load(params.model.path_to_model_weight)
         logger.info("Веса модели успещно загружены!")
     else:
         logger.crutical('Файл весов не указан или не найден. Модель инициализирована случайными весами!')
@@ -132,7 +133,8 @@ def pipeline_eval(**kwargs):
     mean_positive_result = []
     print('-' * 20 + ' Подсчет статистики для похожих изображений ' + '-' * 20)
     for ind_crop, crop in enumerate(crop_i_j_set.keys()):
-        mean_positive_result_crop = [[[] for _ in range(len(crop_i_j_set[crop]))] for _ in range(len(crop_i_j_set[crop]))]
+        mean_positive_result_crop = [[[] for _ in range(len(crop_i_j_set[crop]))] for _ in
+                                     range(len(crop_i_j_set[crop]))]
         for ind_i_layout, layout_i in enumerate(crop_i_j_set[crop].keys()):
             for ind_j_layout, layout_j in enumerate(crop_i_j_set[crop].keys()):
                 if ind_j_layout <= ind_i_layout:
@@ -145,7 +147,7 @@ def pipeline_eval(**kwargs):
 
     mean_negative_result = []
     print('-' * 20 + ' Подсчет статистики для НЕпохожих изображений ' + '-' * 20)
-    for ind_crop, crop in tqdm(enumerate(crop_i_j_set.keys()),desc = "Итерация по кропам непохожих изображений"):
+    for ind_crop, crop in tqdm(enumerate(crop_i_j_set.keys()), desc="Итерация по кропам непохожих изображений"):
         # mean_result_crop = [[[] for _ in range(len(crop_i_j_set[crop]))] for _ in range(len(crop_i_j_set[crop]))]
         for ind_i_layout, layout_i in tqdm(enumerate(crop_i_j_set[crop].keys()), desc='Итерация по позитивным layout'):
             negative_crop = set(crop_i_j_set.keys()).difference(crop)
@@ -158,8 +160,6 @@ def pipeline_eval(**kwargs):
                         vec2 = features_vectors[f"{neg_crop} {layout_j} {i_j2}"]
                         dist = cosine_similarity(vec1, vec2)
                         mean_negative_result.append(dist)
-
-
 
     # вывод статистики похожих изображений
     for ind_crop, crop in enumerate(crop_i_j_set.keys()):

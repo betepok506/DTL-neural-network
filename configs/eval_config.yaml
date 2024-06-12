@@ -2,7 +2,7 @@ comment: "Обучение сиамской сети для сравнения �
 short_comment: ""
 model:
   name: "resnet50"
-  path_to_model_weight: 'D:\\projects_andrey\\hackaton\\DTL-neural-network\\runs\\20240610_154308_resnet50_\\checkpoints\\epoch_42_0.010\\checkpoint_resnet50.pth'
+  path_to_model_weight: 'D:\\projects_andrey\\hackaton\\DTL-neural-network\\runs\\20240611_193347_efficientnet_b0_embeding_128\\checkpoints\\epoch_24_0.034\\checkpoint_efficientnet_b0.pth'
 
 dataset:
   path_to_train_data: "D:\\projects_andrey\\hackaton\\data_processing\\data\\dataset\\train"
@@ -13,6 +13,7 @@ training_params:
   lr: 6e-5
   num_train_epochs: 50
   use_augmentation: True
+  freeze_layers: True
   train_batch_size: 32
   test_batch_size: 32
   image_size: [256, 256]

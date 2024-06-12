@@ -18,15 +18,13 @@ n_classes = 10
 import torch
 from torch.optim import lr_scheduler
 import torch.optim as optim
-from torch.autograd import Variable
 
-from trainer import fit
+from src.engine.trainer import fit
 import numpy as np
 
 cuda = torch.cuda.is_available()
 
 # %matplotlib inline
-import matplotlib
 import matplotlib.pyplot as plt
 
 mnist_classes = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
@@ -62,7 +60,7 @@ def extract_embeddings(dataloader, model):
     return embeddings, labels
 
 
-from datasets import SiameseMNIST
+from src.data.datasets import SiameseMNIST
 
 siamese_train_dataset = SiameseMNIST(train_dataset)  # Returns pairs of images and target same/different
 siamese_test_dataset = SiameseMNIST(test_dataset)
@@ -78,8 +76,8 @@ siamese_train_loader = torch.utils.data.DataLoader(siamese_train_dataset, batch_
 siamese_test_loader = torch.utils.data.DataLoader(siamese_test_dataset, batch_size=batch_size, shuffle=False, **kwargs)
 
 # Set up the network and training parameters
-from networks import EmbeddingNet, SiameseNet
-from losses import ContrastiveLoss
+from src.models.networks import EmbeddingNet, SiameseNet
+from src.losses.losses import ContrastiveLoss
 
 if __name__ == "__main__":
     margin = 1.
