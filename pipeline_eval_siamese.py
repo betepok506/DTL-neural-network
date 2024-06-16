@@ -182,6 +182,5 @@ def pipeline_eval(**kwargs):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="")
     parser.add_argument("--config_file", help="")
-    parser.add_argument("--output_dir", help="")
     args = parser.parse_args()
     pipeline_eval(**vars(args))
