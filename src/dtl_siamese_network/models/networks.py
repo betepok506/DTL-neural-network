@@ -1,8 +1,7 @@
 import torch.nn as nn
 import torch.nn.functional as F
 from torchvision import models, transforms
-from torchvision.models import resnet50, ResNet101_Weights
-
+from dtl_siamese_network.data.transforms import get_test_transforms
 
 class EmbeddingNet(nn.Module):
     def __init__(self):
@@ -121,8 +120,10 @@ class SiameseNet(nn.Module):
         output2 = self.embedding_net(x2)
         return output1, output2
 
-    def predict(self, x):
-        output = self.embedding_net(x)
+    def predict(self, img, device='cpu'):
+        transform = get_test_transforms()
+        transformed_image = transform(img)
+        output = self.embedding_net(transformed_image.unsqueeze(0).to(device))
         return output
 
     def get_embedding(self, x):

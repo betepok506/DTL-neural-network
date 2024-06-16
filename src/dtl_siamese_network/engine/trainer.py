@@ -3,7 +3,7 @@ import numpy as np
 import time
 import os
 import json
-from src.enities.training_pipeline_params import TrainingConfig
+from dtl_siamese_network.enities.training_pipeline_params import TrainingConfig
 
 
 def fit(train_loader,

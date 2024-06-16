@@ -1,18 +1,16 @@
-from src.enities.training_pipeline_params import TrainingConfig, read_training_pipeline_params
+from dtl_siamese_network import read_training_pipeline_params
 from torchvision import transforms
-from src.models.networks import ResNet, SiameseNet,  TorhModelFeatureExtraction
+from dtl_siamese_network import SiameseNet,  TorhModelFeatureExtraction
 import torch
-from pathlib import Path
 from PIL import Image
 from tabulate import tabulate
 import os
 import logging
 import time
 import argparse
-from src.utils.tensorboard_logger import get_logger
+from dtl_siamese_network import get_logger
 import numpy as np
 from tqdm import tqdm
-from src.models.model_hg import Model
 import random
 
 logger = get_logger(__name__, logging.INFO)

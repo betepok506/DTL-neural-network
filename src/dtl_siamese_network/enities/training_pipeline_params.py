@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from marshmallow_dataclass import class_schema
-from src.enities.model_params import ModelParams
-from src.enities.dataset_params import DatasetParams
-from src.enities.training_params import TrainingParams
+from dtl_siamese_network.enities.model_params import ModelParams
+from dtl_siamese_network.enities.dataset_params import DatasetParams
+from dtl_siamese_network.enities.training_params import TrainingParams
 import yaml
 
 @dataclass()

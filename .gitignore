@@ -1,4 +1,8 @@
 runs/
+dist/
+
+src/DTLSiameseNetwork.egg-info/
+
 
 __pycache__/
 .idea/
@@ -11,6 +15,7 @@ __pycache__/
 # Distribution / packaging
 .Python
 build/
+dist/
 
 # Unit test / coverage reports
 htmlcov/

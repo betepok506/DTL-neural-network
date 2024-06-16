@@ -3,13 +3,12 @@ import os
 import torch
 from torch.optim import lr_scheduler
 import torch.optim as optim
-from src.data.datasets import SiameseAerialPhotography
-from src.engine.trainer import fit
-import numpy as np
-from src.models.networks import ResNet, SiameseNet, TorhModelFeatureExtraction
-from src.losses.losses import ContrastiveLoss
-from src.utils.tensorboard_logger import Logger
-from src.enities.training_pipeline_params import TrainingConfig, read_training_pipeline_params
+from dtl_siamese_network.data.datasets import SiameseAerialPhotography
+from dtl_siamese_network.engine.trainer import fit
+from dtl_siamese_network import SiameseNet, TorhModelFeatureExtraction
+from dtl_siamese_network import ContrastiveLoss
+from dtl_siamese_network import Logger
+from dtl_siamese_network import read_training_pipeline_params
 from torchvision import transforms
 import random
 mean, std = 0.1307, 0.3081
